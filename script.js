@@ -11,7 +11,7 @@ const programs = [
         name: "Terminal",
         id: "term-command",
         label: "Command Prompt",
-        content: "<embed src="https://thybytecast.github.io/EDS-active-terminal/" style="width:500px; height: 300px;">",  // Custom content for "My Computer"
+        content: "<p>Please power off to enter text mode.<p>",  // Custom content for "My Computer"
         action: () => openWindow('Info')
     },
     {
