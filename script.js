@@ -8,6 +8,13 @@ const programs = [
         action: () => openWindow('Info')
     },
     {
+        name: "Terminal",
+        id: "Terminal",
+        label: "Terminal",
+        content: "<embed src="https://thybytecast.github.io/EDS-active-terminal/" style="width:500px; height: 300px;">",  // Custom content for "My Computer"
+        action: () => openWindow('Info')
+    },
+    {
         name: "EDS",
         id: "recycle-bin",
         label: "Employee Defence System",
