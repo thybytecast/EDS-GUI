@@ -15,6 +15,13 @@ const programs = [
         action: () => openWindow('Info')
     },
     {
+        name: "Torchwood files",
+        id: "wormhole",
+        label: "Torchwood",
+        content: "<p>TO BE ADDED.<p>",  // Custom content for "My Computer"
+        action: () => openWindow('Info')
+    },
+    {
         name: "EDS",
         id: "recycle-bin",
         label: "Employee Defence System",
