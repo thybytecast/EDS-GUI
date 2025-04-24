@@ -12,14 +12,14 @@ const programs = [
         id: "term-command",
         label: "Command Prompt",
         content: "<p>Please power off to enter text mode.<p>",  // Custom content for "My Computer"
-        action: () => openWindow('Info')
+        action: () => openWindow('Terminal')
     },
     {
         name: "Torchwood files",
         id: "wormhole",
         label: "Torchwood",
         content: "<p>TO BE ADDED.<p>",  // Custom content for "My Computer"
-        action: () => openWindow('Info')
+        action: () => openWindow('Torchwood files')
     },
     {
         name: "EDS",
