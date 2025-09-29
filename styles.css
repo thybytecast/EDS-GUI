@@ -17,6 +17,7 @@ body {
     position: absolute;
     left: 10px;
     top: 50px;
+    z-index: 1; /* 🔧 keep icons above background */
 }
 
 .icon {
@@ -49,6 +50,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 5px 20px;
+    z-index: 1000; /* 🔧 always visible */
 }
 
 #start-menu .start-button {
@@ -89,6 +91,7 @@ body {
     border: 2px solid #00ff00;
     display: none;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 2000; /* 🔧 above windows */
 }
 
 /* Only one item for shutdown */
@@ -101,16 +104,22 @@ body {
     background-color: #444;
 }
 
+/* Windows */
 .window {
     display: none;
     background-color: #222;
     border: 2px solid #00ff00;
-    width: 300px;
-    height: 200px;
+    width: 600px;   /* 🔧 bigger default */
+    height: 400px;  /* 🔧 bigger default */
     position: absolute;
     top: 20%;
     left: 30%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    resize: both;       /* 🔧 resizable */
+    overflow: hidden;   /* 🔧 keep layout clean */
+    display: flex;
+    flex-direction: column;
+    z-index: 500; /* 🔧 above desktop, below menus */
 }
 
 .window-header {
@@ -120,6 +129,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: move; /* 🔧 indicates draggable */
 }
 
 .close-btn {
@@ -131,8 +141,16 @@ body {
 }
 
 .window-body {
-    padding: 20px;
+    flex: 1;           /* 🔧 body takes full height */
+    overflow: auto;    /* 🔧 scroll if needed */
     color: #33ff00;
+    padding: 0;        /* 🔧 let iframe fill properly */
+}
+
+.window-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
 .window-header span {
