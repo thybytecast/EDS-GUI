@@ -1,158 +1,143 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+// Data for the icons, with custom content for each program
+const programs = [
+    {
+        name: "Info",
+        id: "my-computer",
+        label: "Project Nano",
+        content: "<p>this program is only available in text mode.</p>",
+        action: () => openWindow('Info')
+    },
+    {
+        name: "Terminal",
+        id: "term-command",
+        label: "Command Prompt",
+        content: "<p>Please power off to enter text mode.<p>",
+        action: () => openWindow('Terminal')
+    },
+    {
+        name: "Torchwood files",
+        id: "wormhole",
+        label: "Torchwood",
+        url: "https://example.com", // 👈 load a website
+        action: () => openWindow('Torchwood files')
+    },
+    {
+        name: "EDS",
+        id: "recycle-bin",
+        label: "Employee Defence System",
+        content: "<p>Access denied.</p>",
+        action: () => openWindow('EDS')
+    }
+];
+
+// Function to add icons to the desktop
+function addIcons() {
+    const desktop = document.getElementById('desktop');
+    programs.forEach(program => {
+        const iconElement = document.createElement('div');
+        iconElement.classList.add('icon');
+        iconElement.id = program.id;
+
+        const iconLabel = document.createElement('div');
+        iconLabel.classList.add('icon-label');
+        iconLabel.textContent = program.label;
+
+        iconElement.appendChild(iconLabel);
+        iconElement.addEventListener('click', program.action);
+
+        desktop.appendChild(iconElement);
+    });
 }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #0a0a0a;
-    color: #33ff00;
+// Function to open a window
+function openWindow(programName) {
+    const program = programs.find(p => p.name === programName);
+    const existingWindow = document.getElementById(`${programName}-window`);
+    if (existingWindow) {
+        existingWindow.style.display = 'block';
+        return;
+    }
+
+    // Create a new window
+    const window = document.createElement('div');
+    window.classList.add('window');
+    window.id = `${programName}-window`;
+    window.style.display = 'block';
+
+    // Window Header
+    const windowHeader = document.createElement('div');
+    windowHeader.classList.add('window-header');
+    windowHeader.innerHTML = `<span>${programName}</span><button class="close-btn">X</button>`;
+
+    // Window Body
+    const windowBody = document.createElement('div');
+    windowBody.classList.add('window-body');
+
+    if (program.url) {
+        windowBody.innerHTML = `<iframe src="${program.url}" frameborder="0"></iframe>`;
+    } else {
+        windowBody.innerHTML = program.content || `Welcome to ${programName}!`;
+    }
+
+    window.appendChild(windowHeader);
+    window.appendChild(windowBody);
+    document.body.appendChild(window);
+
+    // Make draggable
+    makeDraggable(window);
+
+    // Close button
+    windowHeader.querySelector('.close-btn').addEventListener('click', () => {
+        window.style.display = 'none';
+    });
 }
 
-#desktop {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: absolute;
-    left: 10px;
-    top: 50px;
-    z-index: 1; /* 🔧 keep icons above background */
+// Function to make a window draggable
+function makeDraggable(element) {
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    element.querySelector('.window-header').addEventListener('mousedown', function(e) {
+        isDragging = true;
+        offsetX = e.clientX - element.offsetLeft;
+        offsetY = e.clientY - element.offsetTop;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+
+    function onMouseMove(e) {
+        if (isDragging) {
+            element.style.left = `${e.clientX - offsetX}px`;
+            element.style.top = `${e.clientY - offsetY}px`;
+        }
+    }
+
+    function onMouseUp() {
+        isDragging = false;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
 }
 
-.icon {
-    background-color: #333;
-    padding: 20px;
-    margin: 10px 0;
-    border: 2px solid #00ff00;
-    width: 150px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+// Add icons when the page loads
+window.onload = addIcons;
+
+// Toggle Start Menu
+const startButton = document.querySelector('.start-button');
+if (startButton) {
+    startButton.addEventListener('click', function() {
+        const startMenu = document.getElementById('start-menu-popup');
+        if (startMenu) {
+            startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+        }
+    });
 }
 
-.icon:hover {
-    background-color: #444;
-}
-
-.icon-label {
-    font-size: 14px;
-}
-
-#taskbar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 40px;
-    background-color: #333;
-    color: #33ff00;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 20px;
-    z-index: 1000; /* 🔧 always visible */
-}
-
-#start-menu .start-button {
-    background-color: #222;
-    color: #33ff00;
-    padding: 5px 10px;
-    cursor: pointer;
-    border: 2px solid #00ff00;
-    font-size: 14px;
-    border-radius: 5px;
-}
-
-#taskbar-items {
-    display: flex;
-    gap: 10px;
-}
-
-.taskbar-item {
-    background-color: #444;
-    padding: 8px;
-    border: 1px solid #00ff00;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-#taskbar-items .taskbar-item:hover {
-    background-color: #555;
-}
-
-/* Start menu popup position adjusted */
-#start-menu-popup {
-    position: absolute;
-    bottom: 50px; /* Positioned just above the taskbar */
-    left: 20px;
-    background-color: #222;
-    color: #33ff00;
-    width: 150px;
-    border: 2px solid #00ff00;
-    display: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    z-index: 2000; /* 🔧 above windows */
-}
-
-/* Only one item for shutdown */
-.menu-item {
-    padding: 8px;
-    cursor: pointer;
-}
-
-.menu-item:hover {
-    background-color: #444;
-}
-
-/* Windows */
-.window {
-    display: none;
-    background-color: #222;
-    border: 2px solid #00ff00;
-    width: 600px;   /* 🔧 bigger default */
-    height: 400px;  /* 🔧 bigger default */
-    position: absolute;
-    top: 20%;
-    left: 30%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    resize: both;       /* 🔧 resizable */
-    overflow: hidden;   /* 🔧 keep layout clean */
-    display: flex;
-    flex-direction: column;
-    z-index: 500; /* 🔧 above desktop, below menus */
-}
-
-.window-header {
-    background-color: #333;
-    padding: 10px;
-    color: #33ff00;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: move; /* 🔧 indicates draggable */
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    color: #33ff00;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.window-body {
-    flex: 1;           /* 🔧 body takes full height */
-    overflow: auto;    /* 🔧 scroll if needed */
-    color: #33ff00;
-    padding: 0;        /* 🔧 let iframe fill properly */
-}
-
-.window-body iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-.window-header span {
-    font-weight: bold;
+// Redirect for "Shut Down..." button
+const shutdownBtn = document.getElementById('shutdown-button');
+if (shutdownBtn) {
+    shutdownBtn.addEventListener('click', function() {
+        window.location.href = 'https://thybytecast.github.io/EDS-active-terminal/';
+    });
 }
