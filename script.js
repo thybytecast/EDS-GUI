@@ -1,4 +1,4 @@
-// Data for the icons, with custom content for each program
+// Data for the icons, with custom content or URL for embedding
 const programs = [
     {
         name: "Info",
@@ -11,14 +11,14 @@ const programs = [
         name: "Terminal",
         id: "term-command",
         label: "Command Prompt",
-        content: "<p>Please power off to enter text mode.<p>",
+        content: "<p>Please power off to enter text mode.</p>",
         action: () => openWindow('Terminal')
     },
     {
         name: "Torchwood files",
         id: "wormhole",
         label: "Torchwood",
-        content: "<p>TO BE ADDED.<p>",
+        url: "https://example.com", // <-- Website to embed
         action: () => openWindow('Torchwood files')
     },
     {
@@ -60,10 +60,10 @@ function openWindow(programName) {
         return;
     }
 
-    const window = document.createElement('div');
-    window.classList.add('window');
-    window.id = `${programName}-window`;
-    window.style.display = 'block';
+    const win = document.createElement('div');
+    win.classList.add('window');
+    win.id = `${programName}-window`;
+    win.style.display = 'block';
 
     const windowHeader = document.createElement('div');
     windowHeader.classList.add('window-header');
@@ -71,26 +71,38 @@ function openWindow(programName) {
 
     const windowBody = document.createElement('div');
     windowBody.classList.add('window-body');
-    windowBody.innerHTML = program.content || `Welcome to ${programName}!`;
 
-    window.appendChild(windowHeader);
-    window.appendChild(windowBody);
+    if (program.url) {
+        // Embed website inside an iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = program.url;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        windowBody.appendChild(iframe);
+    } else {
+        windowBody.innerHTML = program.content || `Welcome to ${programName}!`;
+    }
 
-    document.body.appendChild(window);
+    win.appendChild(windowHeader);
+    win.appendChild(windowBody);
+    document.body.appendChild(win);
 
-    makeDraggable(window);
+    makeDraggable(win);
 
+    // Close button functionality
     windowHeader.querySelector('.close-btn').addEventListener('click', () => {
-        window.style.display = 'none';
+        win.style.display = 'none';
     });
 }
 
 // Function to make a window draggable
 function makeDraggable(element) {
     let isDragging = false;
-    let offsetX = 0, offsetY = 0;
-    const header = element.querySelector('.window-header');
+    let offsetX = 0;
+    let offsetY = 0;
 
+    const header = element.querySelector('.window-header');
     header.addEventListener('mousedown', function(e) {
         isDragging = true;
         offsetX = e.clientX - element.offsetLeft;
@@ -113,16 +125,22 @@ function makeDraggable(element) {
     }
 }
 
-// ✅ Run only after DOM is ready
+// Run after DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
     addIcons();
 
-    document.querySelector('.start-button').addEventListener('click', function() {
-        const startMenu = document.getElementById('start-menu-popup');
-        startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
-    });
+    const startButton = document.querySelector('.start-button');
+    if (startButton) {
+        startButton.addEventListener('click', () => {
+            const startMenu = document.getElementById('start-menu-popup');
+            startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+        });
+    }
 
-    document.getElementById('shutdown-button').addEventListener('click', function() {
-        window.location.href = 'https://thybytecast.github.io/EDS-active-terminal/';
-    });
+    const shutdownBtn = document.getElementById('shutdown-button');
+    if (shutdownBtn) {
+        shutdownBtn.addEventListener('click', () => {
+            window.location.href = 'https://thybytecast.github.io/EDS-active-terminal/';
+        });
+    }
 });
