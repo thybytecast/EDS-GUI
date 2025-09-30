@@ -64,6 +64,8 @@ function openWindow(programName) {
     win.classList.add('window');
     win.id = `${programName}-window`;
     win.style.display = 'block';
+    win.style.resize = 'both'; // <-- resizable
+    win.style.overflow = 'hidden'; // ensures no scrollbars when resized
 
     const windowHeader = document.createElement('div');
     windowHeader.classList.add('window-header');
@@ -71,6 +73,7 @@ function openWindow(programName) {
 
     const windowBody = document.createElement('div');
     windowBody.classList.add('window-body');
+    windowBody.style.height = "calc(100% - 40px)"; // leave space for header
 
     if (program.url) {
         // Embed website inside an iframe
@@ -81,7 +84,9 @@ function openWindow(programName) {
         iframe.style.border = 'none';
         windowBody.appendChild(iframe);
     } else {
+        // text/html content
         windowBody.innerHTML = program.content || `Welcome to ${programName}!`;
+        windowBody.style.overflow = "auto"; // scroll if text overflows
     }
 
     win.appendChild(windowHeader);
