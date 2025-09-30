@@ -10,7 +10,7 @@ let zIndexCounter = 1000;
 const programs = [
     { name: "Info", id: "my-computer", label: "Project Nano", content: "<p>This program is only available in text mode.</p>" },
     { name: "Terminal", id: "term-command", label: "Command Prompt", url: "https://thybytecast.github.io/EDS-active-terminal/" },
-    { name: "Torchwood files", id: "wormhole", label: "Torchwood", url: "https://example.com" }, // change to the URL you want
+    { name: "Torchwood files", id: "wormhole", label: "Torchwood", url: "https://thybytecast.github.io/web-file-explorer/" }, // change to the URL you want
     { name: "EDS", id: "recycle-bin", label: "Employee Defence System", content: "<p>Access denied.</p>" }
 ];
 
@@ -259,4 +259,5 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Initialization error:', err);
     }
 });
+
 
