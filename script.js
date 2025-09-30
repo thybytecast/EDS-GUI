@@ -16,7 +16,7 @@ const programs = [
         name: "Torchwood files",
         id: "wormhole",
         label: "Torchwood",
-        url: "https://example.com" // 👈 put a real URL if you want an iframe here
+        url: "https://example.com" // 👈 replace with real URL
     },
     {
         name: "EDS",
@@ -26,7 +26,7 @@ const programs = [
     }
 ];
 
-// Function to add icons to the desktop
+// Add desktop icons
 function addIcons() {
     const desktop = document.getElementById('desktop');
     programs.forEach(program => {
@@ -45,7 +45,7 @@ function addIcons() {
     });
 }
 
-// Function to open a window
+// Open a program window
 function openWindow(programName) {
     const program = programs.find(p => p.name === programName);
     if (!program) return;
@@ -56,7 +56,6 @@ function openWindow(programName) {
         return;
     }
 
-    // Create window
     const windowEl = document.createElement('div');
     windowEl.classList.add('window');
     windowEl.id = `${programName}-window`;
@@ -65,8 +64,8 @@ function openWindow(programName) {
         position: 'absolute',
         width: '400px',
         height: '300px',
-        background: '#2b2b2b',
-        border: '1px solid #000',
+        background: '#222',
+        border: '2px solid #00ff00',
         resize: 'both',
         overflow: 'hidden'
     });
@@ -74,24 +73,18 @@ function openWindow(programName) {
     // Header
     const windowHeader = document.createElement('div');
     windowHeader.classList.add('window-header');
-    Object.assign(windowHeader.style, {
-        background: '#444',
-        color: '#fff',
-        padding: '4px',
-        cursor: 'move',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    });
     windowHeader.innerHTML = `<span>${programName}</span><button class="close-btn">X</button>`;
 
     // Body
     const windowBody = document.createElement('div');
     windowBody.classList.add('window-body');
     Object.assign(windowBody.style, {
-        background: '#2b2b2b',
-        position: 'relative',
-        width: '100%'
+        position: 'absolute',
+        top: windowHeader.offsetHeight + 'px',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: 'hidden'
     });
 
     let contentEl;
@@ -99,9 +92,6 @@ function openWindow(programName) {
         contentEl = document.createElement('iframe');
         contentEl.src = program.url;
         Object.assign(contentEl.style, {
-            position: 'absolute',
-            top: '0',
-            left: '0',
             width: '100%',
             height: '100%',
             border: 'none'
@@ -111,7 +101,7 @@ function openWindow(programName) {
         contentEl.innerHTML = program.content || `Welcome to ${programName}!`;
         Object.assign(contentEl.style, {
             padding: '8px',
-            color: '#fff'
+            color: '#33ff00'
         });
     }
 
@@ -127,19 +117,17 @@ function openWindow(programName) {
         windowEl.style.display = 'none';
     });
 
-    // Resize logic
+    // Resize observer keeps iframe filling the space
     function adjustBodySize() {
         const headerHeight = windowHeader.offsetHeight;
-        windowBody.style.height = (windowEl.clientHeight - headerHeight) + 'px';
         windowBody.style.top = headerHeight + 'px';
-        windowBody.style.position = 'absolute';
+        windowBody.style.height = (windowEl.clientHeight - headerHeight) + 'px';
     }
     adjustBodySize();
-    const resizeObserver = new ResizeObserver(adjustBodySize);
-    resizeObserver.observe(windowEl);
+    new ResizeObserver(adjustBodySize).observe(windowEl);
 }
 
-// Make window draggable
+// Dragging logic
 function makeDraggable(element) {
     let isDragging = false;
     let offsetX = 0;
@@ -168,16 +156,23 @@ function makeDraggable(element) {
     }
 }
 
-// Init
-window.onload = addIcons;
+// Init desktop icons when page loads
+window.addEventListener('load', addIcons);
 
 // Start menu toggle
-document.querySelector('.start-button').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', () => {
+    const startButton = document.querySelector('.start-button');
     const startMenu = document.getElementById('start-menu-popup');
-    startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
-});
+    if (startButton && startMenu) {
+        startButton.addEventListener('click', () => {
+            startMenu.style.display = (startMenu.style.display === 'block') ? 'none' : 'block';
+        });
+    }
 
-// Shutdown
-document.getElementById('shutdown-button').addEventListener('click', function() {
-    window.location.href = 'https://thybytecast.github.io/EDS-active-terminal/';
+    const shutdownButton = document.getElementById('shutdown-button');
+    if (shutdownButton) {
+        shutdownButton.addEventListener('click', () => {
+            window.location.href = 'https://thybytecast.github.io/EDS-active-terminal/';
+        });
+    }
 });
